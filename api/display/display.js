@@ -39,9 +39,9 @@ const skill = new Skills();
  *
  */
 async function netatmolatest(req, res, next) {
-  serviceHelper.log('trace', 'netatmolatest', 'Display Dyson PureCool latest readings API called');
+  serviceHelper.log('trace', 'netatmolatest', 'Display Netatmo latest readings API called');
   try {
-    const SQL = 'SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 WHERE time > NOW() - interval \'1 hour\' FROM netatmo GROUP BY location';
+    const SQL = 'SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval \'1 hour\' GROUP BY location';
     serviceHelper.log('trace', 'netatmolatest', 'Connect to data store connection pool');
     const dbClient = await global.devicesDataClient.connect(); // Connect to data store
     serviceHelper.log('trace', 'netatmolatest', 'Get sensor values');
@@ -101,7 +101,7 @@ skill.get('/netatmolatest', netatmolatest);
  *
  */
 async function displayNetatmoData(req, res, next) {
-  serviceHelper.log('trace', 'displayNetatmoData', 'Display Dyson PureCool data API called');
+  serviceHelper.log('trace', 'displayNetatmoData', 'Display Netatmo data API called');
 
   let durationSpan = null;
   let roomID = null;
