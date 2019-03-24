@@ -18,11 +18,8 @@ WORKDIR /home/nodejs/app
 COPY . /home/nodejs/app
 
 RUN rm -rf node_modules \
-    && npm update
-		
-RUN npm install --production
-
-RUN npm install pino-elasticsearch -g
+    && npm install --production \
+		&& npm install pino-elasticsearch -g
 
 HEALTHCHECK --interval=12s --timeout=12s --start-period=30s \  
  CMD node lib/healthcheck.js
