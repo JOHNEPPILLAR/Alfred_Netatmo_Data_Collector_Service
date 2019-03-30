@@ -115,6 +115,9 @@ async function displayNetatmoData(req, res, next) {
     case '4':
       location = 'Kids room';
       break;
+    case '8':
+      location = 'Living room';
+      break;
     case '9':
       location = 'Kitchen';
       break;
