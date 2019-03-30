@@ -87,6 +87,7 @@ async function processData(apiData) {
     dataValues = [
       new Date(),
       process.env.Environment,
+      // eslint-disable-next-line no-underscore-dangle
       apiData[0]._id,
       apiData[0].module_name,
       100,
@@ -102,11 +103,12 @@ async function processData(apiData) {
     serviceHelper.log('error', 'Netatmo - processData', err.message);
   }
 
-  // Living room
+  // Kitchen
   try {
     dataValues = [
       new Date(),
       process.env.Environment,
+      // eslint-disable-next-line no-underscore-dangle
       apiData[0].modules[1]._id,
       apiData[0].modules[1].module_name,
       apiData[0].modules[1].battery_percent,
@@ -115,9 +117,9 @@ async function processData(apiData) {
       apiData[0].modules[1].dashboard_data.Pressure,
       apiData[0].modules[1].dashboard_data.CO2,
     ];
-    serviceHelper.log('trace', 'Netatmo - processData', 'Saving living room data');
+    serviceHelper.log('trace', 'Netatmo - processData', 'Saving kitchen room data');
     await saveDeviceData(dataValues);
-    serviceHelper.log('info', 'Netatmo - processData', 'Saved living room data');
+    serviceHelper.log('info', 'Netatmo - processData', 'Saved kitcchen room data');
   } catch (err) {
     serviceHelper.log('error', 'Netatmo - processData', err.message);
   }
@@ -127,6 +129,7 @@ async function processData(apiData) {
     dataValues = [
       new Date(),
       process.env.Environment,
+      // eslint-disable-next-line no-underscore-dangle
       apiData[0].modules[0]._id,
       apiData[0].modules[0].module_name,
       apiData[0].modules[0].battery_percent,
@@ -141,6 +144,27 @@ async function processData(apiData) {
   } catch (err) {
     serviceHelper.log('error', 'Netatmo - processData', err.message);
   }
+
+  // Living room
+  try {
+    dataValues = [
+      new Date(),
+      process.env.Environment,
+      // eslint-disable-next-line no-underscore-dangle
+      apiData[1]._id,
+      apiData[1].module_name,
+      100,
+      apiData[1].dashboard_data.Temperature,
+      apiData[1].dashboard_data.Humidity,
+      apiData[1].dashboard_data.Pressure,
+      apiData[1].dashboard_data.CO2,
+    ];
+    serviceHelper.log('trace', 'Netatmo - processData', 'Saving living room data');
+    await saveDeviceData(dataValues);
+    serviceHelper.log('info', 'Netatmo - processData', 'Saved living room data');
+  } catch (err) {
+    serviceHelper.log('error', 'Netatmo - processData', err.message);
+  }
 }
 
 exports.getNatemoData = function getNatemoData() {
@@ -152,6 +176,7 @@ exports.getNatemoData = function getNatemoData() {
         cleanExit();
       }
       serviceHelper.log('trace', 'Netatmo - getNatemoData', 'Got data, now processing it');
+
       processData(apiData); // Process the device data
     });
   } catch (err) {
