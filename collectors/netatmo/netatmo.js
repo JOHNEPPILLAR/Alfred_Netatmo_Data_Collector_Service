@@ -119,7 +119,7 @@ async function processData(apiData) {
     ];
     serviceHelper.log('trace', 'Netatmo - processData', 'Saving kitchen room data');
     await saveDeviceData(dataValues);
-    serviceHelper.log('info', 'Netatmo - processData', 'Saved kitcchen room data');
+    serviceHelper.log('info', 'Netatmo - processData', 'Saved kitchen room data');
   } catch (err) {
     serviceHelper.log('error', 'Netatmo - processData', err.message);
   }
