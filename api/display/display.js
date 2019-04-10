@@ -39,29 +39,29 @@ const skill = new Skills();
  *
  */
 async function netatmolatest(req, res, next) {
-  serviceHelper.log('trace', 'netatmolatest', 'Display Netatmo latest readings API called');
+  serviceHelper.log('trace', 'Display Netatmo latest readings API called');
   try {
     const SQL = 'SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval \'1 hour\' GROUP BY location';
-    serviceHelper.log('trace', 'netatmolatest', 'Connect to data store connection pool');
+    serviceHelper.log('trace', 'Connect to data store connection pool');
     const dbClient = await global.devicesDataClient.connect(); // Connect to data store
-    serviceHelper.log('trace', 'netatmolatest', 'Get sensor values');
+    serviceHelper.log('trace', 'Get sensor values');
     const results = await dbClient.query(SQL);
-    serviceHelper.log('trace', 'netatmolatest', 'Release the data store connection back to the pool');
+    serviceHelper.log('trace', 'Release the data store connection back to the pool');
     await dbClient.release(); // Return data store connection back to pool
 
     if (results.rowCount === 0) {
-      serviceHelper.log('trace', 'netatmolatest', 'No data exists in the last hour');
+      serviceHelper.log('trace', 'No data exists in the last hour');
       serviceHelper.sendResponse(res, false, 'No results');
       next();
       return;
     }
-    serviceHelper.log('trace', 'netatmolatest', 'Return data back to caller');
+    serviceHelper.log('trace', 'Return data back to caller');
 
     const returnData = results.rows;
     serviceHelper.sendResponse(res, true, returnData);
     next();
   } catch (err) {
-    serviceHelper.log('error', 'netatmolatest', err.message);
+    serviceHelper.log('error', err.message);
     serviceHelper.sendResponse(res, false, err);
     next();
   }
@@ -101,7 +101,7 @@ skill.get('/netatmolatest', netatmolatest);
  *
  */
 async function displayNetatmoData(req, res, next) {
-  serviceHelper.log('trace', 'displayNetatmoData', 'Display Netatmo data API called');
+  serviceHelper.log('trace', 'Display Netatmo data API called');
 
   let durationSpan = null;
   let roomID = null;
@@ -150,25 +150,25 @@ async function displayNetatmoData(req, res, next) {
         break;
     }
 
-    serviceHelper.log('trace', 'displayNetatmoData', 'Connect to data store connection pool');
+    serviceHelper.log('trace', 'Connect to data store connection pool');
     const dbClient = await global.devicesDataClient.connect(); // Connect to data store
-    serviceHelper.log('trace', 'displayNetatmoData', 'Get sensor values');
+    serviceHelper.log('trace', 'Get sensor values');
     const results = await dbClient.query(SQL);
-    serviceHelper.log('trace', 'displayNetatmoData', 'Release the data store connection back to the pool');
+    serviceHelper.log('trace', 'Release the data store connection back to the pool');
     await dbClient.release(); // Return data store connection back to pool
 
     if (results.rowCount === 0) {
-      serviceHelper.log('trace', 'displayNetatmoData', 'No data to return');
+      serviceHelper.log('trace', 'No data to return');
       serviceHelper.sendResponse(res, true, 'No data to return');
       return;
     }
-    serviceHelper.log('trace', 'displayNetatmoData', 'Return data back to caller');
+    serviceHelper.log('trace', 'Return data back to caller');
     results.DurationTitle = durationTitle;
     results.rows.reverse();
     serviceHelper.sendResponse(res, true, results);
     next();
   } catch (err) {
-    serviceHelper.log('error', 'displayNetatmoData', err.message);
+    serviceHelper.log('error', err.message);
     serviceHelper.sendResponse(res, false, err);
     next();
   }

@@ -12,7 +12,7 @@ if (!process.env.Mock) {
     try {
       await netatmo.getNatemoData(); // Collect Netatmo device data
     } catch (err) {
-      serviceHelper.log('error', 'Controller - CollectData - Netatmo', err.message);
+      serviceHelper.log('error', err.message);
     }
     setTimeout(() => { FnCollectData(); }, poolingInterval); // Wait then run function again
   };

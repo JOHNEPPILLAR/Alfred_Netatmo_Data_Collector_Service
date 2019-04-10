@@ -28,19 +28,19 @@ const auth = {
  * Tidy up when exit or crytical error raised
  */
 async function cleanExit() {
-  serviceHelper.log('trace', 'Netatmo - cleanExit', 'Closing the data store pools');
+  serviceHelper.log('trace', 'Closing the data store pools');
   try {
     await devicesDataClient.end();
   } catch (err) {
-    serviceHelper.log('trace', 'Netatmo - cleanExit', 'Failed to close the data store connection');
+    serviceHelper.log('trace', 'Failed to close the data store connection');
   }
-  serviceHelper.log('trace', 'Netatmo - cleanExit', 'Finished collecting Netatmo data');
+  serviceHelper.log('trace', 'Finished collecting Netatmo data');
 }
 process.on('exit', () => { cleanExit(); });
 process.on('SIGINT', () => { cleanExit(); });
 process.on('SIGTERM', () => { cleanExit(); });
 process.on('uncaughtException', (err) => {
-  if (err) serviceHelper.log('error', 'Netatmo', err.message); // log the error
+  if (err) serviceHelper.log('error', err.message); // log the error
   cleanExit();
 });
 
@@ -48,8 +48,8 @@ process.on('uncaughtException', (err) => {
  * Data store error events
  */
 devicesDataClient.on('error', (err) => {
-  serviceHelper.log('error', 'Netato', 'Devices data store: Unexpected error on idle client');
-  serviceHelper.log('error', 'Netatmo', err.message);
+  serviceHelper.log('error', 'Devices data store: Unexpected error on idle client');
+  serviceHelper.log('error', err.message);
   cleanExit();
 });
 
@@ -59,20 +59,20 @@ devicesDataClient.on('error', (err) => {
 async function saveDeviceData(SQLValues) {
   try {
     const SQL = 'INSERT INTO netatmo("time", sender, address, location, battery, temperature, humidity, pressure, co2) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
-    serviceHelper.log('trace', 'Netatmo - saveData', 'Connect to data store connection pool');
+    serviceHelper.log('trace', 'Connect to data store connection pool');
     const dbClient = await devicesDataClient.connect(); // Connect to data store
-    serviceHelper.log('trace', 'Netatmo - saveData', 'Save sensor values');
+    serviceHelper.log('trace', 'Save sensor values');
     const results = await dbClient.query(SQL, SQLValues);
-    serviceHelper.log('trace', 'Netatmo - saveData', 'Release the data store connection back to the pool');
+    serviceHelper.log('trace', 'Release the data store connection back to the pool');
     await dbClient.release(); // Return data store connection back to pool
 
     if (results.rowCount !== 1) {
-      serviceHelper.log('error', 'Netatmo - saveDeviceData', `Failed to insert data for device: ${SQLValues[3]}`);
+      serviceHelper.log('error', `Failed to insert data for device: ${SQLValues[3]}`);
       return;
     }
-    serviceHelper.log('trace', 'Netatmo - saveDeviceData', `Saved data for device: ${SQLValues[3]}`);
+    serviceHelper.log('trace', `Saved data for device: ${SQLValues[3]}`);
   } catch (err) {
-    serviceHelper.log('error', 'Netatmo - saveDeviceData', err.message);
+    serviceHelper.log('error', err.message);
   }
 }
 
@@ -96,11 +96,11 @@ async function processData(apiData) {
       apiData[0].dashboard_data.Pressure,
       apiData[0].dashboard_data.CO2,
     ];
-    serviceHelper.log('trace', 'Netatmo - processData', 'Saving kids room data');
+    serviceHelper.log('trace', 'Saving kids room data');
     await saveDeviceData(dataValues);
-    serviceHelper.log('info', 'Netatmo - processData', 'Saved kids room data');
+    serviceHelper.log('info', 'Saved kids room data');
   } catch (err) {
-    serviceHelper.log('error', 'Netatmo - processData', err.message);
+    serviceHelper.log('error', err.message);
   }
 
   // Kitchen
@@ -117,11 +117,11 @@ async function processData(apiData) {
       apiData[0].modules[1].dashboard_data.Pressure,
       apiData[0].modules[1].dashboard_data.CO2,
     ];
-    serviceHelper.log('trace', 'Netatmo - processData', 'Saving kitchen room data');
+    serviceHelper.log('trace', 'Saving kitchen room data');
     await saveDeviceData(dataValues);
-    serviceHelper.log('info', 'Netatmo - processData', 'Saved kitchen room data');
+    serviceHelper.log('info', 'Saved kitchen room data');
   } catch (err) {
-    serviceHelper.log('error', 'Netatmo - processData', err.message);
+    serviceHelper.log('error', err.message);
   }
 
   // Garden
@@ -138,11 +138,11 @@ async function processData(apiData) {
       null,
       null,
     ];
-    serviceHelper.log('trace', 'Netatmo - processData', 'Saving garden data');
+    serviceHelper.log('trace', 'Saving garden data');
     await saveDeviceData(dataValues);
-    serviceHelper.log('info', 'Netatmo - processData', 'Saved garden data');
+    serviceHelper.log('info', 'Saved garden data');
   } catch (err) {
-    serviceHelper.log('error', 'Netatmo - processData', err.message);
+    serviceHelper.log('error', err.message);
   }
 
   // Living room
@@ -159,11 +159,11 @@ async function processData(apiData) {
       apiData[1].dashboard_data.Pressure,
       apiData[1].dashboard_data.CO2,
     ];
-    serviceHelper.log('trace', 'Netatmo - processData', 'Saving living room data');
+    serviceHelper.log('trace', 'Saving living room data');
     await saveDeviceData(dataValues);
-    serviceHelper.log('info', 'Netatmo - processData', 'Saved living room data');
+    serviceHelper.log('info', 'Saved living room data');
   } catch (err) {
-    serviceHelper.log('error', 'Netatmo - processData', err.message);
+    serviceHelper.log('error', err.message);
   }
 }
 
@@ -172,14 +172,14 @@ exports.getNatemoData = function getNatemoData() {
     const api = new Netatmo(auth); // Connect to api service
     api.getStationsData((err, apiData) => { // Get data from device
       if (err) {
-        serviceHelper.log('error', 'Netatmo - getNatemoData', err.message);
+        serviceHelper.log('error', err.message);
         cleanExit();
       }
-      serviceHelper.log('trace', 'Netatmo - getNatemoData', 'Got data, now processing it');
+      serviceHelper.log('trace', 'Got data, now processing it');
 
       processData(apiData); // Process the device data
     });
   } catch (err) {
-    serviceHelper.log('error', 'Netatmo - getNatemoData', err.message);
+    serviceHelper.log('error', err.message);
   }
 };
