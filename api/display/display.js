@@ -76,12 +76,7 @@ skill.get('/netatmolatest', netatmolatest);
  * @apiSuccessExample {json} Success-Response:
  *   HTTPS/1.1 200 OK
  *   {
- *     "data": {
- *       "command": "SELECT",
- *       "rowCount": 2,
- *       "oid": null,
- *       "DurationTitle": "Daily"
- *       "rows": [
+ *     "data": [
  *           {
  *              "time": "2018-10-21T08:50:06.369Z",
  *              "air_quality": 2,
@@ -89,7 +84,6 @@ skill.get('/netatmolatest', netatmolatest);
  *              "humidity": 75
  *           },
  *           ...
- *         }
  *     ]
  *   }
  *
@@ -165,7 +159,7 @@ async function displayNetatmoData(req, res, next) {
     serviceHelper.log('trace', 'Return data back to caller');
     results.DurationTitle = durationTitle;
     results.rows.reverse();
-    serviceHelper.sendResponse(res, true, results);
+    serviceHelper.sendResponse(res, true, results.rows);
     next();
   } catch (err) {
     serviceHelper.log('error', err.message);
