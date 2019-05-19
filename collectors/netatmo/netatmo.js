@@ -84,84 +84,100 @@ async function processData(apiData) {
 
   // Kids room
   try {
-    dataValues = [
-      new Date(),
-      process.env.Environment,
-      // eslint-disable-next-line no-underscore-dangle
-      apiData[0]._id,
-      apiData[0].module_name,
-      100,
-      apiData[0].dashboard_data.Temperature,
-      apiData[0].dashboard_data.Humidity,
-      apiData[0].dashboard_data.Pressure,
-      apiData[0].dashboard_data.CO2,
-    ];
-    serviceHelper.log('trace', 'Saving kids room data');
-    await saveDeviceData(dataValues);
-    serviceHelper.log('info', 'Saved kids room data');
+    if (typeof apiData[0].dashboard_data !== 'undefined') {
+      dataValues = [
+        new Date(),
+        process.env.Environment,
+        // eslint-disable-next-line no-underscore-dangle
+        apiData[0]._id,
+        apiData[0].module_name,
+        100,
+        apiData[0].dashboard_data.Temperature,
+        apiData[0].dashboard_data.Humidity,
+        apiData[0].dashboard_data.Pressure,
+        apiData[0].dashboard_data.CO2,
+      ];
+      serviceHelper.log('trace', 'Saving kids room data');
+      await saveDeviceData(dataValues);
+      serviceHelper.log('info', 'Saved kids room data');
+    } else {
+      serviceHelper.log('error', 'Kids room sensor off line');
+    }
   } catch (err) {
     serviceHelper.log('error', err.message);
   }
 
   // Kitchen
   try {
-    dataValues = [
-      new Date(),
-      process.env.Environment,
-      // eslint-disable-next-line no-underscore-dangle
-      apiData[0].modules[1]._id,
-      apiData[0].modules[1].module_name,
-      apiData[0].modules[1].battery_percent,
-      apiData[0].modules[1].dashboard_data.Temperature,
-      apiData[0].modules[1].dashboard_data.Humidity,
-      apiData[0].modules[1].dashboard_data.Pressure,
-      apiData[0].modules[1].dashboard_data.CO2,
-    ];
-    serviceHelper.log('trace', 'Saving kitchen room data');
-    await saveDeviceData(dataValues);
-    serviceHelper.log('info', 'Saved kitchen room data');
+    if (typeof apiData[0].modules[1].dashboard_data !== 'undefined') {
+      dataValues = [
+        new Date(),
+        process.env.Environment,
+        // eslint-disable-next-line no-underscore-dangle
+        apiData[0].modules[1]._id,
+        apiData[0].modules[1].module_name,
+        apiData[0].modules[1].battery_percent,
+        apiData[0].modules[1].dashboard_data.Temperature,
+        apiData[0].modules[1].dashboard_data.Humidity,
+        apiData[0].modules[1].dashboard_data.Pressure,
+        apiData[0].modules[1].dashboard_data.CO2,
+      ];
+      serviceHelper.log('trace', 'Saving kitchen room data');
+      await saveDeviceData(dataValues);
+      serviceHelper.log('info', 'Saved kitchen room data');
+    } else {
+      serviceHelper.log('error', 'Kitchen sensor off line');
+    }
   } catch (err) {
     serviceHelper.log('error', err.message);
   }
 
   // Garden
   try {
-    dataValues = [
-      new Date(),
-      process.env.Environment,
-      // eslint-disable-next-line no-underscore-dangle
-      apiData[0].modules[0]._id,
-      apiData[0].modules[0].module_name,
-      apiData[0].modules[0].battery_percent,
-      apiData[0].modules[0].dashboard_data.Temperature,
-      apiData[0].modules[0].dashboard_data.Humidity,
-      null,
-      null,
-    ];
-    serviceHelper.log('trace', 'Saving garden data');
-    await saveDeviceData(dataValues);
-    serviceHelper.log('info', 'Saved garden data');
+    if (typeof apiData[0].modules[0] !== 'undefined') {
+      dataValues = [
+        new Date(),
+        process.env.Environment,
+        // eslint-disable-next-line no-underscore-dangle
+        apiData[0].modules[0]._id,
+        apiData[0].modules[0].module_name,
+        apiData[0].modules[0].battery_percent,
+        apiData[0].modules[0].dashboard_data.Temperature,
+        apiData[0].modules[0].dashboard_data.Humidity,
+        null,
+        null,
+      ];
+      serviceHelper.log('trace', 'Saving garden data');
+      await saveDeviceData(dataValues);
+      serviceHelper.log('info', 'Saved garden data');
+    } else {
+      serviceHelper.log('error', 'Garden sensor off line');
+    }
   } catch (err) {
     serviceHelper.log('error', err.message);
   }
 
   // Living room
   try {
-    dataValues = [
-      new Date(),
-      process.env.Environment,
-      // eslint-disable-next-line no-underscore-dangle
-      apiData[1]._id,
-      apiData[1].module_name,
-      100,
-      apiData[1].dashboard_data.Temperature,
-      apiData[1].dashboard_data.Humidity,
-      apiData[1].dashboard_data.Pressure,
-      apiData[1].dashboard_data.CO2,
-    ];
-    serviceHelper.log('trace', 'Saving living room data');
-    await saveDeviceData(dataValues);
-    serviceHelper.log('info', 'Saved living room data');
+    if (typeof apiData[1].dashboard_data !== 'undefined') {
+      dataValues = [
+        new Date(),
+        process.env.Environment,
+        // eslint-disable-next-line no-underscore-dangle
+        apiData[1]._id,
+        apiData[1].module_name,
+        100,
+        apiData[1].dashboard_data.Temperature,
+        apiData[1].dashboard_data.Humidity,
+        apiData[1].dashboard_data.Pressure,
+        apiData[1].dashboard_data.CO2,
+      ];
+      serviceHelper.log('trace', 'Saving living room data');
+      await saveDeviceData(dataValues);
+      serviceHelper.log('info', 'Saved living room data');
+    } else {
+      serviceHelper.log('error', 'Living room sensor off line');
+    }
   } catch (err) {
     serviceHelper.log('error', err.message);
   }

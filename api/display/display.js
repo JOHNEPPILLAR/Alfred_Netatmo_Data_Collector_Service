@@ -11,8 +11,8 @@ const serviceHelper = require('../../lib/helper.js');
 const skill = new Skills();
 
 /**
- * @api {get} /netatmolatest
- * @apiName netatmolatest
+ * @api {get} /current
+ * @apiName current
  * @apiGroup Display
  *
  * @apiSuccessExample {json} Success-Response:
@@ -38,7 +38,7 @@ const skill = new Skills();
  *   }
  *
  */
-async function netatmolatest(req, res, next) {
+async function current(req, res, next) {
   serviceHelper.log('trace', 'Display Netatmo latest readings API called');
   try {
     const SQL = 'SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval \'1 hour\' GROUP BY location';
@@ -66,11 +66,11 @@ async function netatmolatest(req, res, next) {
     next();
   }
 }
-skill.get('/netatmolatest', netatmolatest);
+skill.get('/current', current);
 
 /**
- * @api {get} /displaynetatmodata
- * @apiName displaynetatmodata
+ * @api {get} /all
+ * @apiName all
  * @apiGroup Display
  *
  * @apiSuccessExample {json} Success-Response:
@@ -94,7 +94,7 @@ skill.get('/netatmolatest', netatmolatest);
  *   }
  *
  */
-async function displayNetatmoData(req, res, next) {
+async function all(req, res, next) {
   serviceHelper.log('trace', 'Display Netatmo data API called');
 
   let durationSpan = null;
@@ -167,6 +167,6 @@ async function displayNetatmoData(req, res, next) {
     next();
   }
 }
-skill.get('/displaynetatmodata', displayNetatmoData);
+skill.get('/all', all);
 
 module.exports = skill;
