@@ -14,6 +14,8 @@ if (!process.env.Mock) {
     } catch (err) {
       serviceHelper.log('error', err.message);
     }
-    setTimeout(() => { FnCollectData(); }, poolingInterval); // Wait then run function again
+    setTimeout(() => {
+      FnCollectData();
+    }, poolingInterval); // Wait then run function again
   };
-};
+}

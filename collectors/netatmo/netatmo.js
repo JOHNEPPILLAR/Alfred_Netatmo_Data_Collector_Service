@@ -36,9 +36,15 @@ async function cleanExit() {
   }
   serviceHelper.log('trace', 'Finished collecting Netatmo data');
 }
-process.on('exit', () => { cleanExit(); });
-process.on('SIGINT', () => { cleanExit(); });
-process.on('SIGTERM', () => { cleanExit(); });
+process.on('exit', () => {
+  cleanExit();
+});
+process.on('SIGINT', () => {
+  cleanExit();
+});
+process.on('SIGTERM', () => {
+  cleanExit();
+});
 process.on('uncaughtException', (err) => {
   if (err) serviceHelper.log('error', err.message); // log the error
   cleanExit();
@@ -186,7 +192,8 @@ async function processData(apiData) {
 exports.getNatemoData = function getNatemoData() {
   try {
     const api = new Netatmo(auth); // Connect to api service
-    api.getStationsData((err, apiData) => { // Get data from device
+    api.getStationsData((err, apiData) => {
+      // Get data from device
       if (err) {
         serviceHelper.log('error', err.message);
         cleanExit();
