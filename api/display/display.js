@@ -41,7 +41,7 @@ const skill = new Skills();
 async function current(req, res, next) {
   serviceHelper.log('trace', 'Display Netatmo latest readings API called');
   try {
-    const SQL = 'SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval \'1 hour\' GROUP BY location';
+    const SQL = "SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval '1 hour' GROUP BY location";
     serviceHelper.log('trace', 'Connect to data store connection pool');
     const dbClient = await global.devicesDataClient.connect(); // Connect to data store
     serviceHelper.log('trace', 'Get sensor values');
@@ -114,6 +114,9 @@ async function all(req, res, next) {
       break;
     case '9':
       location = 'Kitchen';
+      break;
+    case 'G':
+      location = 'Garden';
       break;
     default:
       location = 'Kids room';
