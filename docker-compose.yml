@@ -1,7 +1,6 @@
 version: '3.5'
 
 services:
-
   alfred_netatmo_data_collector_service:
     build: .
     image: alfred_netatmo_data_collector_service:latest
@@ -9,10 +8,10 @@ services:
     restart: always
     hostname: alfred_netatmo_data_collector_service
     networks:
-      - alfred 
-    
-networks:
+      - alfred
+    command: npm run prod
 
+networks:
   alfred:
     name: nat
     driver: nat
