@@ -2,11 +2,7 @@
  * Import external libraries
  */
 const Skills = require('restify-router').Router;
-
-/**
- * Import helper libraries
- */
-const serviceHelper = require('../../lib/helper.js');
+const serviceHelper = require('alfred_helper');
 
 const skill = new Skills();
 
@@ -41,12 +37,16 @@ const skill = new Skills();
 async function current(req, res, next) {
   serviceHelper.log('trace', 'Display Netatmo latest readings API called');
   try {
-    const SQL = "SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval '1 hour' GROUP BY location";
+    const SQL =
+      "SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval '1 hour' GROUP BY location";
     serviceHelper.log('trace', 'Connect to data store connection pool');
     const dbClient = await global.devicesDataClient.connect(); // Connect to data store
     serviceHelper.log('trace', 'Get sensor values');
     const results = await dbClient.query(SQL);
-    serviceHelper.log('trace', 'Release the data store connection back to the pool');
+    serviceHelper.log(
+      'trace',
+      'Release the data store connection back to the pool',
+    );
     await dbClient.release(); // Return data store connection back to pool
 
     if (results.rowCount === 0) {
@@ -151,7 +151,10 @@ async function all(req, res, next) {
     const dbClient = await global.devicesDataClient.connect(); // Connect to data store
     serviceHelper.log('trace', 'Get sensor values');
     const results = await dbClient.query(SQL);
-    serviceHelper.log('trace', 'Release the data store connection back to the pool');
+    serviceHelper.log(
+      'trace',
+      'Release the data store connection back to the pool',
+    );
     await dbClient.release(); // Return data store connection back to pool
 
     if (results.rowCount === 0) {

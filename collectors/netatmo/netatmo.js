@@ -3,11 +3,7 @@
  */
 const Netatmo = require('netatmo');
 const { Pool } = require('pg');
-
-/**
- * Import helper libraries
- */
-const serviceHelper = require('../../lib/helper.js');
+const serviceHelper = require('alfred_helper');
 
 const devicesDataClient = new Pool({
   host: process.env.DataStore,

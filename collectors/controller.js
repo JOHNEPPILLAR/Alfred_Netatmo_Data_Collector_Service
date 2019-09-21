@@ -1,7 +1,7 @@
 /**
- * Import helper libraries
+ * Import external libraries
  */
-const serviceHelper = require('../lib/helper.js');
+const serviceHelper = require('alfred_helper');
 
 const poolingInterval = 5 * 60 * 1000; // 5 minutes
 
