@@ -1,13 +1,13 @@
 /**
  * Import external libraries
  */
-const serviceHelper = require('alfred_helper');
+const serviceHelper = require('alfred-helper');
 
 const poolingInterval = 5 * 60 * 1000; // 5 minutes
 
 if (!process.env.Mock) {
   // eslint-disable-next-line global-require
-  const netatmo = require('./netatmo/netatmo.js');
+  const netatmo = require('../../app/collectors/netatmo/netatmo.js');
   exports.collectData = async function FnCollectData() {
     try {
       await netatmo.getNatemoData(); // Collect Netatmo device data

@@ -7,15 +7,15 @@ const restify = require('restify');
 const fs = require('fs');
 const UUID = require('pure-uuid');
 const { Pool } = require('pg');
-const serviceHelper = require('alfred_helper');
+const serviceHelper = require('alfred-helper');
+const { version } = require('../../package.json');
 
 /**
  * Import helper libraries
  */
 const devices = require('../collectors/controller.js');
 
-global.instanceTraceID = new UUID(4);
-global.callTraceID = null;
+global.APITraceID = '';
 
 // Data base connection pool
 global.devicesDataClient = new Pool({
@@ -29,7 +29,7 @@ global.devicesDataClient = new Pool({
 // Restify server Init
 const server = restify.createServer({
   name: process.env.ServiceName,
-  version: process.env.Version,
+  version,
   key: fs.readFileSync('./certs/server.key'),
   certificate: fs.readFileSync('./certs/server.crt'),
 });
@@ -60,9 +60,11 @@ server.use((req, res, next) => {
 
 server.use((req, res, next) => {
   // Check for a trace id
-  if (typeof req.headers['trace-id'] === 'undefined') {
-    global.callTraceID = new UUID(4);
-  } // Generate new trace id
+  if (typeof req.headers['api-trace-id'] === 'undefined') {
+    global.APITraceID = new UUID(4);
+  } else {
+    global.APITraceID = req.headers['api-trace-id'];
+  }
 
   // Check for valid auth key
   if (req.headers['client-access-key'] !== process.env.ClientAccessKey) {
@@ -102,13 +104,17 @@ async function cleanExit() {
   serviceHelper.log('warn', 'Service stopping');
   serviceHelper.log('trace', 'Closing the data store pools');
   try {
-    await global.devicesDataClient.end();
+    await global.devicesDataClient
+      .end()
+      .then(() => serviceHelper.log('trace', 'client has disconnected'))
+      .catch((err) => serviceHelper.log('error', err.stack));
   } catch (err) {
     serviceHelper.log('trace', 'Failed to close the data store connection');
   }
   serviceHelper.log('warn', 'Closing rest server');
   server.close(() => {
     // Ensure rest server is stopped
+    serviceHelper.log('warn', 'Exit the app');
     process.exit(); // Exit app
   });
 }

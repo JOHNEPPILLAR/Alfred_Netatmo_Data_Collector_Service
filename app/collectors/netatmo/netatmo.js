@@ -3,7 +3,7 @@
  */
 const Netatmo = require('netatmo');
 const { Pool } = require('pg');
-const serviceHelper = require('alfred_helper');
+const serviceHelper = require('alfred-helper');
 
 const devicesDataClient = new Pool({
   host: process.env.DataStore,
@@ -26,7 +26,10 @@ const auth = {
 async function cleanExit() {
   serviceHelper.log('trace', 'Closing the data store pools');
   try {
-    await devicesDataClient.end();
+    await devicesDataClient
+      .end()
+      .then(() => serviceHelper.log('trace', 'client has disconnected'))
+      .catch((err) => serviceHelper.log('error', err.stack));
   } catch (err) {
     serviceHelper.log('trace', 'Failed to close the data store connection');
   }

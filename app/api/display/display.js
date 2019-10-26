@@ -2,75 +2,13 @@
  * Import external libraries
  */
 const Skills = require('restify-router').Router;
-const serviceHelper = require('alfred_helper');
+const serviceHelper = require('alfred-helper');
 
 const skill = new Skills();
 
 /**
- * @api {get} /current
- * @apiName current
- * @apiGroup Display
- *
- * @apiSuccessExample {json} Success-Response:
- *   HTTPS/1.1 200 OK
- *   {
- *   "data": [
- *       {
- *           "location": "Kitchen",
- *           "battery": 100,
- *           "temperature": 21,
- *           "humidity": 59,
- *           "pressure": null,
- *           "co2": 1042
- *       },
- *       ...
- *   ]
- *   }
- *
- * @apiErrorExample {json} Error-Response:
- *   HTTPS/1.1 400 Bad Request
- *   {
- *     data: Error message
- *   }
- *
- */
-async function current(req, res, next) {
-  serviceHelper.log('trace', 'Display Netatmo latest readings API called');
-  try {
-    const SQL =
-      "SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval '1 hour' GROUP BY location";
-    serviceHelper.log('trace', 'Connect to data store connection pool');
-    const dbClient = await global.devicesDataClient.connect(); // Connect to data store
-    serviceHelper.log('trace', 'Get sensor values');
-    const results = await dbClient.query(SQL);
-    serviceHelper.log(
-      'trace',
-      'Release the data store connection back to the pool',
-    );
-    await dbClient.release(); // Return data store connection back to pool
-
-    if (results.rowCount === 0) {
-      serviceHelper.log('trace', 'No data exists in the last hour');
-      serviceHelper.sendResponse(res, false, 'No results');
-      next();
-      return;
-    }
-    serviceHelper.log('trace', 'Return data back to caller');
-
-    const returnData = results.rows;
-    serviceHelper.sendResponse(res, true, returnData);
-    next();
-  } catch (err) {
-    serviceHelper.log('error', err.message);
-    serviceHelper.sendResponse(res, false, err);
-    next();
-  }
-}
-skill.get('/current', current);
-
-/**
- * @api {get} /all
- * @apiName all
+ * @api {get} /sensors
+ * @apiName sensors
  * @apiGroup Display
  *
  * @apiSuccessExample {json} Success-Response:
@@ -88,13 +26,13 @@ skill.get('/current', current);
  *   }
  *
  * @apiErrorExample {json} Error-Response:
- *   HTTPS/1.1 400 Bad Request
+ *   HTTPS/1.1 500 Internal error
  *   {
  *     data: Error message
  *   }
  *
  */
-async function all(req, res, next) {
+async function sensors(req, res, next) {
   serviceHelper.log('trace', 'Display Netatmo data API called');
 
   let durationSpan = null;
@@ -169,10 +107,72 @@ async function all(req, res, next) {
     next();
   } catch (err) {
     serviceHelper.log('error', err.message);
-    serviceHelper.sendResponse(res, false, err);
+    serviceHelper.sendResponse(res, null, err);
     next();
   }
 }
-skill.get('/all', all);
+skill.get('/sensors', sensors);
+
+
+/**
+ * @api {get} /current
+ * @apiName current
+ * @apiGroup Display
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   HTTPS/1.1 200 OK
+ *   {
+ *   "data": [
+ *       {
+ *           "location": "Kitchen",
+ *           "battery": 100,
+ *           "temperature": 21,
+ *           "humidity": 59,
+ *           "pressure": null,
+ *           "co2": 1042
+ *       },
+ *       ...
+ *   ]
+ *   }
+ *
+ * @apiErrorExample {json} Error-Response:
+ *   HTTPS/1.1 500 Internal error
+ *   {
+ *     data: Error message
+ *   }
+ *
+ */
+async function current(req, res, next) {
+  serviceHelper.log('trace', 'Display Netatmo latest readings API called');
+  try {
+    const SQL = "SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval '1 hour' GROUP BY location";
+    serviceHelper.log('trace', 'Connect to data store connection pool');
+    const dbClient = await global.devicesDataClient.connect(); // Connect to data store
+    serviceHelper.log('trace', 'Get sensor values');
+    const results = await dbClient.query(SQL);
+    serviceHelper.log(
+      'trace',
+      'Release the data store connection back to the pool',
+    );
+    await dbClient.release(); // Return data store connection back to pool
+
+    if (results.rowCount === 0) {
+      serviceHelper.log('trace', 'No data exists in the last hour');
+      serviceHelper.sendResponse(res, false, 'No results');
+      next();
+      return;
+    }
+    serviceHelper.log('trace', 'Return data back to caller');
+
+    const returnData = results.rows;
+    serviceHelper.sendResponse(res, true, returnData);
+    next();
+  } catch (err) {
+    serviceHelper.log('error', err.message);
+    serviceHelper.sendResponse(res, null, err);
+    next();
+  }
+}
+skill.get('/sensors/current', current);
 
 module.exports = skill;
