@@ -95,7 +95,7 @@ server.on('uncaughtException', (req, res, route, err) => {
  * Configure API end points
  */
 require('../api/root/root.js').applyRoutes(server);
-require('../api/display/display.js').applyRoutes(server, '/display');
+require('../api/display/display.js').applyRoutes(server);
 
 /**
  * Stop server if process close event is issued
