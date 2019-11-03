@@ -158,7 +158,7 @@ async function current(req, res, next) {
 
     if (results.rowCount === 0) {
       serviceHelper.log('trace', 'No data exists in the last hour');
-      serviceHelper.sendResponse(res, false, 'No results');
+      serviceHelper.sendResponse(res, true, 'No data to return');
       next();
       return;
     }
