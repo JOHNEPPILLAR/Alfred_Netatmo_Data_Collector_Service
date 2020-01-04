@@ -15,7 +15,7 @@ async function saveDeviceData(SQLValues) {
   try {
     const SQL = 'INSERT INTO netatmo("time", sender, address, location, battery, temperature, humidity, pressure, co2) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
     serviceHelper.log('trace', 'Connect to data store connection pool');
-    const dbConnection = await serviceHelper.connectToDB('devices');
+    const dbConnection = await serviceHelper.connectToDB('netatmo');
     const dbClient = await dbConnection.connect(); // Connect to data store
     serviceHelper.log('trace', 'Save sensor values');
     const results = await dbClient.query(SQL, SQLValues);

@@ -87,7 +87,7 @@ async function sensors(req, res, next) {
     }
 
     serviceHelper.log('trace', 'Connect to data store connection pool');
-    const dbConnection = await serviceHelper.connectToDB('devices');
+    const dbConnection = await serviceHelper.connectToDB('netatmo');
     const dbClient = await dbConnection.connect(); // Connect to data store
     serviceHelper.log('trace', 'Get sensor values');
     const results = await dbClient.query(SQL);
@@ -148,7 +148,7 @@ async function current(req, res, next) {
   try {
     const SQL = "SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval '1 hour' GROUP BY location";
     serviceHelper.log('trace', 'Connect to data store connection pool');
-    const dbConnection = await serviceHelper.connectToDB('devices');
+    const dbConnection = await serviceHelper.connectToDB('netatmo');
     const dbClient = await dbConnection.connect(); // Connect to data store
     serviceHelper.log('trace', 'Get sensor values');
     const results = await dbClient.query(SQL);
