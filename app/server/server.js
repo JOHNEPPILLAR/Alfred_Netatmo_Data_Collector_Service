@@ -12,7 +12,7 @@ const { version } = require('../../package.json');
  * Import helper libraries
  */
 const APIroot = require('../api/root/root.js');
-const APInetatmo = require('../api/netatmo/netatmo.js')
+const APInetatmo = require('../api/netatmo/netatmo.js');
 const devices = require('../collectors/controller.js');
 
 global.APITraceID = '';
@@ -127,7 +127,7 @@ async function setupAndRun() {
   // Start service and listen to requests
   server.listen(process.env.PORT, async () => {
     serviceHelper.log('info', `${process.env.VIRTUAL_HOST} has started`);
-    if (process.env.MOCK === 'true' || process.env.Mock === 'lights') {
+    if (process.env.MOCK === 'true') {
       serviceHelper.log('info', 'Mocking enabled, will not collect data from device');
     } else {
       devices.collectData();
