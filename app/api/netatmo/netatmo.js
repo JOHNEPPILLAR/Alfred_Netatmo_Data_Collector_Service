@@ -148,14 +148,13 @@ async function current(req, res, next) {
     const SQL = "SELECT location, last(battery, time) as battery, last(temperature, time) as temperature, last(humidity, time) as humidity, last(pressure, time) as pressure, last(co2, time) as co2 FROM netatmo WHERE time > NOW() - interval '1 hour' GROUP BY location";
     serviceHelper.log('trace', 'Connect to data store connection pool');
     const dbConnection = await serviceHelper.connectToDB('netatmo');
-    const dbClient = await dbConnection.connect(); // Connect to data store
     serviceHelper.log('trace', 'Get sensor values');
-    const results = await dbClient.query(SQL);
+    const results = await dbConnection.query(SQL);
     serviceHelper.log(
       'trace',
       'Release the data store connection back to the pool',
     );
-    await dbClient.end(); // Close data store connection
+    await dbConnection.end(); // Close data store connection
     if (results.rowCount === 0) {
       serviceHelper.log('trace', 'No data exists in the last hour');
       serviceHelper.sendResponse(res, 200, {});
