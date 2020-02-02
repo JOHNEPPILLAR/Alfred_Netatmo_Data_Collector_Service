@@ -103,7 +103,7 @@ async function sensors(req, res, next) {
     serviceHelper.log('trace', 'Return data back to caller');
     results.DurationTitle = durationTitle;
     results.rows.reverse();
-    serviceHelper.sendResponse(res, 200, results.rows);
+    serviceHelper.sendResponse(res, 200, results);
     next();
   } catch (err) {
     serviceHelper.log('error', err.message);
