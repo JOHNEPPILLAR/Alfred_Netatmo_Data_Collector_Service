@@ -38,7 +38,6 @@ async function sensors(req, res, next) {
   serviceHelper.log('trace', `Query: ${JSON.stringify(req.query)}`);
 
   let location = null;
-  let durationTitle;
   let SQL;
 
   const { roomID } = req.params;
@@ -66,23 +65,18 @@ async function sensors(req, res, next) {
     switch (durationSpan) {
       case 'month':
         SQL = `SELECT time_bucket('6 hours', time) AS timeofday, avg(battery) as battery, avg(temperature) as temperature, avg(humidity) as humidity, avg(co2) as co2 FROM netatmo WHERE location = '${location}' AND time > NOW() - interval '1 month' GROUP BY timeofday ORDER BY timeofday DESC`;
-        durationTitle = 'Last month';
         break;
       case 'week':
         SQL = `SELECT time_bucket('3 hours', time) AS timeofday, avg(battery) as battery, avg(temperature) as temperature, avg(humidity) as humidity, avg(co2) as co2 FROM netatmo WHERE location = '${location}' AND time > NOW() - interval '1 week' GROUP BY timeofday ORDER BY timeofday DESC`;
-        durationTitle = 'Last weeks';
         break;
       case 'day':
         SQL = `SELECT time_bucket('30 minutes', time) AS timeofday, avg(battery) as battery, avg(temperature) as temperature, avg(humidity) as humidity, avg(co2) as co2 FROM netatmo WHERE location = '${location}' AND time > NOW() - interval '1 day' GROUP BY timeofday ORDER BY timeofday DESC`;
-        durationTitle = 'Today';
         break;
       case 'hour':
         SQL = `SELECT time_bucket('1 minute', time) AS timeofday, avg(battery) as battery, avg(temperature) as temperature, avg(humidity) as humidity, avg(co2) as co2 FROM netatmo WHERE location = '${location}' AND time > NOW() - interval '1 hour' GROUP BY timeofday ORDER BY timeofday DESC`;
-        durationTitle = 'Last hour';
         break;
       default:
         SQL = `SELECT time_bucket('1 minute', time) AS timeofday, avg(battery) as battery, avg(temperature) as temperature, avg(humidity) as humidity, avg(co2) as co2 FROM netatmo WHERE location = '${location}' AND time > NOW() - interval '1 hour' GROUP BY timeofday ORDER BY timeofday DESC`;
-        durationTitle = 'Last hour';
         break;
     }
 
@@ -101,9 +95,8 @@ async function sensors(req, res, next) {
       return;
     }
     serviceHelper.log('trace', 'Return data back to caller');
-    results.DurationTitle = durationTitle;
     results.rows.reverse();
-    serviceHelper.sendResponse(res, 200, results);
+    serviceHelper.sendResponse(res, 200, results.rows);
     next();
   } catch (err) {
     serviceHelper.log('error', err.message);
