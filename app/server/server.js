@@ -16,6 +16,7 @@ const APInetatmo = require('../api/netatmo/netatmo.js');
 const devices = require('../collectors/controller.js');
 
 global.APITraceID = '';
+
 let ClientAccessKey;
 
 async function setupAndRun() {
