@@ -11,4 +11,4 @@ CREATE TABLE netatmo (
   co2             DOUBLE PRECISION  NULL
 )
 
-SELECT create_hypertable('netatmo', 'time', 'address');
+SELECT create_hypertable('netatmo', 'time');
