@@ -17,9 +17,7 @@
     "alfred-helper": "git://github.com/johneppillar/alfred_helper",
     "dateformat": "^3.0.3",
     "dotenv": "^8.2.0",
-    "fs": "^0.0.2",
     "netatmo": "^2.3.0",
-    "path": "^0.12.7",
     "snyk": "^1.349.0"
   },
   "devDependencies": {
