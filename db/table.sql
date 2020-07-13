@@ -11,4 +11,6 @@ CREATE TABLE netatmo (
   co2             DOUBLE PRECISION  NULL
 )
 
+CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+
 SELECT create_hypertable('netatmo', 'time');
