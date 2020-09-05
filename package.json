@@ -19,7 +19,7 @@
     "dateformat": "^3.0.3",
     "dotenv": "^8.2.0",
     "netatmo": "^2.3.0",
-    "snyk": "^1.388.0"
+    "snyk": "^1.389.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
